@@ -87,15 +87,15 @@ router.post('/update/:id', upload, async (req, res) => {
   try {
     const id = req.params.id;
     let new_image = req.body.old_image; // Initialize with the old image
-
-    if (req.fil) {
-      new_image = req.fil.filename; // Update with the new image filename
+    if (req.file) {
+      new_image = req.file.filename; // Update with the new image filename
       try {
         fs.unlinkSync('./upload/' + req.body.old_image); // Remove the old image file
       } catch (err) {
         console.error(err);
       }
     }
+    
 
     // Update user data using findByIdAndUpdate
     const updatedUser = await User.findByIdAndUpdate(id, {
@@ -117,22 +117,25 @@ router.post('/update/:id', upload, async (req, res) => {
   }
 });
 //delete
-router.delete('/delete/:id', async (req, res) => {
+router.get('/delete/:id', async (req, res) => {
   try {
     const id = req.params.id;
-    
+
     // Use Mongoose to find the document by ID and remove it
-    const deletedDocument = await user.findByIdAndRemove(id);
+    const deletedDocument = await User.findOneAndDelete({ _id: id });
 
     if (!deletedDocument) {
       return res.status(404).json({ message: 'Document not found' });
     }
 
-    // Respond with a success message or status
+    // Respond with a success message
     res.status(200).json({ message: 'Document deleted successfully' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
+
+
 module.exports = router;
