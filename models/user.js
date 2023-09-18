@@ -17,6 +17,10 @@ const userSchema = new mongoose.Schema({
     type: String, // Use uppercase "String" for string data type
     required: true,
   },
+  password: {
+    type: String, // Use uppercase "String" for string data type
+    required: true,
+  },
   created: {
     type: Date,
     required: true,

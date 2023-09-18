@@ -32,6 +32,18 @@ app.use(express.static("upload"));
 app.set('view engine', 'ejs');
 //route prefix
 app.use("", require('./routes/routes'));
+app.get('/login', (req, res) => {
+    res.render('login', { title: 'Add user' });
+  });
+  //signup
+  app.get('/signup', (req, res) => {
+    res.render('signup', { title: 'Add user' });
+  });
+  //admin
+  app.get('/admin', (req, res) => {
+    res.render('admin', { title: 'Add user' });
+  });
+  
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);

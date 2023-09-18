@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
+
 const multer = require('multer');
 const fs = require('fs'); 
 // Multer configuration (if needed)
@@ -22,7 +23,9 @@ router.post('/add',upload, async (req, res) => {
       name: req.body.firstname,
       email: req.body.email,
       phone: req.body.phone,
+      password: req.body.password,
       image: req.file.filename,
+     
     });
 
     await user.save();
@@ -135,7 +138,35 @@ router.get('/delete/:id', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+router.post('/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
 
+    // Find the user by email
+    const user = await Login.findOne({ email });
+
+    // If the user doesn't exist, return an error
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    // Compare the provided password with the hashed password in the database
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatch) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    // Authentication successful
+    // You can implement session handling or JWT token generation here
+    req.session.user = user; // Store user data in the session
+
+    // Redirect to a protected page or send a success response
+    res.redirect('/'); // Example redirect to a dashboard page
+  } catch (err) {
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
 
 
 module.exports = router;
