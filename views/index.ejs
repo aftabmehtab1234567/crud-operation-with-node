@@ -1,0 +1,54 @@
+<%- include('common/header') %>
+<div class="container"> <!-- Add a container for your content -->
+   <% if (message) { %>
+    <div class="alert alert-<%= message.type %>" role="alert">
+      <button type="button" class="btn-close" aria-label="Close"></button>
+      <strong><%= message.message %></strong>
+    </div>
+  <% } %> 
+  
+
+  <table class="table align-middle mb-0 bg-white">
+    <thead class="bg-light">
+      <tr>
+        <th>ID</th>
+        <th>Image</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% users.forEach((row ,index) => { %>
+        <tr>
+          <td><%= row._id %></td>
+          <td>
+            <img
+              src="<%= row.image %>"
+              alt="<%= row.name %>"
+              style="width: 45px; height: 45px"
+              class="rounded-circle"
+            />
+          </td>
+          <td><%= row.name %></td>
+          <td><%= row.email %></td>
+          <td><%= row.phone %></td>
+          <td>
+            <button type="button" class="btn btn-link btn-sm btn-rounded" id="edit_<%= index + 1 %>">
+             <a href="/edit/<%=row._id %>">Edit</a>
+            </button>
+            <button type="button" class="btn btn-link btn-sm btn-rounded" id="delete_<%= index + 1 %>">
+              <a href="/delete/<%=row._id%>">Delete</a>
+            </button>
+          </td>
+        </tr>
+      <% }); %>
+      
+    </tbody>
+  </table>
+  
+  </table>
+</div> <!-- Close the container div -->
+
+<%- include('common/footer') %>
