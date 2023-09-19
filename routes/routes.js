@@ -167,6 +167,11 @@ router.post('/login', async (req, res) => {
   }
 });
 router.get('/logout', (req, res) => {
+  // Clear any existing session timeout
+  if (req.session.timeout) {
+    clearTimeout(req.session.timeout);
+  }
+
   req.session.destroy((err) => {
     if (err) {
       console.error(err);
