@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
-
+const bcrypt = require('bcrypt');
 const multer = require('multer');
 const fs = require('fs'); 
-// Multer configuration (if needed)
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, './upload');
@@ -17,30 +17,40 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage }).single("image");
 
 // Insert a user in routes
-router.post('/add',upload, async (req, res) => {
+router.post('/add', upload, async (req, res) => {
   try {
-    const user = new User({
-      name: req.body.firstname,
-      email: req.body.email,
-      phone: req.body.phone,
-      password: req.body.password,
-      image: req.file.filename,
-     
-    });
+    const existingUser = await User.findOne({ email: req.body.email });
 
-    await user.save();
+    if (existingUser) {
+      // If a user with the same email already exists, send an error message
+      req.session.message = {
+        type: 'danger',
+        message: 'User already exists with this email',
+      };
+      res.redirect('/'); // Redirect to the appropriate view or page
+    } else {
+      // If the email is unique, create and save the new user
+      const user = new User({
+        name: req.body.firstname,
+        email: req.body.email,
+        phone: req.body.phone,
+        password: req.body.password,
+        image: req.file.filename,
+      });
 
-    req.session.message = {
-      type: 'success',
-      message: 'User added successfully',
-    };
-    
+      await user.save();
 
-    res.redirect('/');
+      req.session.message = {
+        type: 'success',
+        message: 'User added successfully',
+      };
+      res.redirect('/'); // Redirect to the appropriate view or page
+    }
   } catch (err) {
     res.json({ message: err.message, type: 'danger' });
   }
 });
+
 //get all ecord
 router.get('/', async (req, res) => {
   try {
@@ -132,41 +142,40 @@ router.get('/delete/:id', async (req, res) => {
     }
 
     // Respond with a success message
-    res.status(200).json({ message: 'Document deleted successfully' });
+    res.redirect('/');
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
 router.post('/login', async (req, res) => {
   try {
-    const { email, password } = req.body;
-
-    // Find the user by email
-    const user = await Login.findOne({ email });
-
-    // If the user doesn't exist, return an error
-    if (!user) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+    const check = await User.findOne({ email: req.body.email });
+    
+    if (check && check.password === req.body.password) {
+      // If email and password match, render the desired page (e.g., home)
+      req.session.user = check;
+      res.redirect('/'); // Replace 'home' with the appropriate view name
+    } else {
+      // If email or password is incorrect, send an error message
+      res.redirect('/login');
     }
-
-    // Compare the provided password with the hashed password in the database
-    const passwordMatch = await bcrypt.compare(password, user.password);
-
-    if (!passwordMatch) {
-      return res.status(401).json({ message: 'Invalid credentials' });
-    }
-
-    // Authentication successful
-    // You can implement session handling or JWT token generation here
-    req.session.user = user; // Store user data in the session
-
-    // Redirect to a protected page or send a success response
-    res.redirect('/'); // Example redirect to a dashboard page
-  } catch (err) {
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+router.get('/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error(err);
+    } else {
+      res.redirect('/login');
+    }
+  });
+});
+// Route to check if a session is active (example)
 
 
 module.exports = router;
