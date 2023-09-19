@@ -22,29 +22,12 @@ db.once('open', () => console.log('Connected successfully'));
         resave:false,
     }),
   );
-  app.get("/", (req, res, next) => {
-    res.locals.message = req.session.message;
+app.get("/" ,(req ,res,next)=>{
+    res.locals.message=req.session.message;
     delete req.session.message;
-  
-    if (req.session && req.session.user) {
-      // Clear any existing session timeout
-      if (req.session.timeout) {
-        clearTimeout(req.session.timeout);
-      }
-  
-      // Set a new timeout when the user interacts with the application (one second)
-      req.session.timeout = setTimeout(() => {
-        req.session.destroy((err) => {
-          if (err) {
-            console.error(err);
-          }
-        });
-      }, 30000); // One second (1000 milliseconds)
-    }
-  
+    
     next();
-  });
-  
+});
 
 app.use(express.static("upload"));
 //set template engine
