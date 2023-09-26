@@ -4,6 +4,7 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const multer = require('multer');
 const fs = require('fs'); 
+const requireAuth = require('../Middleware/Auth'); // Correct the path as needed
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -77,7 +78,7 @@ router.get('/add', (req, res) => {
 //edit profile
 // Edit profile route
 // Edit profile route
-router.get('/edit/:id', async (req, res) => {
+router.get('/edit/:id',  async (req, res) => {
   try {
     const id = req.params.id;
     const user = await User.findById(id).exec();
