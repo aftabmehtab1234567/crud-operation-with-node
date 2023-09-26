@@ -72,13 +72,13 @@ router.get('/', async (req, res) => {
 });
 
 
-router.get('/add', (req, res) => {
+router.get('/add',requireAuth, (req, res) => {
   res.render('adduser', { title: 'Add user' });
 });
 //edit profile
 // Edit profile route
 // Edit profile route
-router.get('/edit/:id',  async (req, res) => {
+router.get('/edit/:id', requireAuth, async (req, res) => {
   try {
     const id = req.params.id;
     const user = await User.findById(id).exec();
@@ -131,7 +131,7 @@ router.post('/update/:id', upload, async (req, res) => {
   }
 });
 //delete
-router.get('/delete/:id', async (req, res) => {
+router.get('/delete/:id',requireAuth, async (req, res) => {
   try {
     const id = req.params.id;
 
@@ -177,11 +177,10 @@ router.get('/logout', (req, res) => {
     if (err) {
       console.error(err);
     } else {
-      res.redirect('/login');
+      res.redirect('/');
     }
   });
 });
-// Route to check if a session is active (example)
 
 
 module.exports = router;

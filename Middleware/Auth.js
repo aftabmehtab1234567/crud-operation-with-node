@@ -8,23 +8,9 @@ function requireAuth(req, res, next) {
     } else {
         console.log('Access denied. Redirecting to login.');
         // User is not authenticated or the session is not active, redirect to the login page
-        res.redirect('/login'); // Assuming '/login' is your login page URL
+        res.redirect('/'); // Assuming '/login' is your login page URL
     }
 }
-router.get('/edit/:id', requireAuth, async (req, res) => {
-    res.render('/');
-  });
-  
-  router.post('/update/:id', requireAuth, upload, async (req, res) => {
-    res.render('/');
-  });
-  
-  router.get('/delete/:id', requireAuth, async (req, res) => {
-    res.render('/');
-  });
-  
-  router.get('/add', requireAuth, (req, res) => {
-    res.render('/');
-  });
+
   
 module.exports = requireAuth;
