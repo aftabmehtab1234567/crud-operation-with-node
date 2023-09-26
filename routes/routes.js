@@ -177,7 +177,7 @@ router.get('/logout', (req, res) => {
     if (err) {
       console.error(err);
     } else {
-      res.redirect('/');
+      res.redirect('/login');
     }
   });
 });
