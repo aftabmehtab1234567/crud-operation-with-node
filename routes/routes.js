@@ -4,6 +4,13 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const multer = require('multer');
 const fs = require('fs'); 
+<<<<<<< HEAD
+=======
+const requireAuth = require('../Middleware/Auth'); // Correct the path as needed
+
+/// Apply requireAuth middleware to routes that require authentication
+
+>>>>>>> 9ccf282 (hi)
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -17,7 +24,11 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage }).single("image");
 
 // Insert a user in routes
+<<<<<<< HEAD
 router.post('/add', upload, async (req, res) => {
+=======
+router.post('/add',requireAuth, upload, async (req, res) => {
+>>>>>>> 9ccf282 (hi)
   try {
     const existingUser = await User.findOne({ email: req.body.email });
 
@@ -71,13 +82,21 @@ router.get('/', async (req, res) => {
 });
 
 
+<<<<<<< HEAD
 router.get('/add', (req, res) => {
+=======
+router.get('/add',requireAuth, (req, res) => {
+>>>>>>> 9ccf282 (hi)
   res.render('adduser', { title: 'Add user' });
 });
 //edit profile
 // Edit profile route
 // Edit profile route
+<<<<<<< HEAD
 router.get('/edit/:id', async (req, res) => {
+=======
+router.get('/edit/:id',requireAuth, async (req, res) => {
+>>>>>>> 9ccf282 (hi)
   try {
     const id = req.params.id;
     const user = await User.findById(id).exec();
@@ -96,7 +115,11 @@ router.get('/edit/:id', async (req, res) => {
   }
 });
 //update
+<<<<<<< HEAD
 router.post('/update/:id', upload, async (req, res) => {
+=======
+router.post('/update/:id',requireAuth, upload, async (req, res) => {
+>>>>>>> 9ccf282 (hi)
   try {
     const id = req.params.id;
     let new_image = req.body.old_image; // Initialize with the old image
@@ -130,7 +153,11 @@ router.post('/update/:id', upload, async (req, res) => {
   }
 });
 //delete
+<<<<<<< HEAD
 router.get('/delete/:id', async (req, res) => {
+=======
+router.get('/delete/:id',requireAuth, async (req, res) => {
+>>>>>>> 9ccf282 (hi)
   try {
     const id = req.params.id;
 
@@ -152,6 +179,7 @@ router.get('/delete/:id', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const check = await User.findOne({ email: req.body.email });
+<<<<<<< HEAD
     
     if (check && check.password === req.body.password) {
       // If email and password match, render the desired page (e.g., home)
@@ -159,6 +187,29 @@ router.post('/login', async (req, res) => {
       res.redirect('/'); // Replace 'home' with the appropriate view name
     } else {
       // If email or password is incorrect, send an error message
+=======
+
+    if (check && check.password === req.body.password) {
+      // If email and password match, set a session variable to indicate authentication
+      req.session.isAuthenticated = true;
+      req.session.userId = check._id; // Use _id from the check object
+
+      // Check if the session is active (req.session.isAuthenticated is truthy)
+      if (req.session.isAuthenticated) {
+        console.log('session active');
+        res.redirect('/'); // Redirect to the desired page after successful login
+      } else {
+        // Handle the case where req.session.isAuthenticated is not truthy (unlikely if check is defined)
+        console.log('session not active');
+        res.redirect('/login'); // Redirect to the login page
+      }
+    } else {
+      // If email or password is incorrect, send an error message
+      req.session.message = {
+        type: 'danger',
+        message: 'Incorrect email or password',
+      };
+>>>>>>> 9ccf282 (hi)
       res.redirect('/login');
     }
   } catch (error) {
@@ -166,21 +217,38 @@ router.post('/login', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+<<<<<<< HEAD
 router.get('/logout', (req, res) => {
   // Clear any existing session timeout
   if (req.session.timeout) {
     clearTimeout(req.session.timeout);
   }
 
+=======
+
+
+// Other protected routes can be defined similarly
+
+// Logout Route (Available to all users, including non-authenticated)
+router.get('/logout', (req, res) => {
+>>>>>>> 9ccf282 (hi)
   req.session.destroy((err) => {
     if (err) {
       console.error(err);
     } else {
+<<<<<<< HEAD
       res.redirect('/login');
     }
   });
 });
 // Route to check if a session is active (example)
+=======
+      res.redirect('/'); // Redirect to the login page after logout
+    }
+  });
+});
+
+>>>>>>> 9ccf282 (hi)
 
 
 module.exports = router;
