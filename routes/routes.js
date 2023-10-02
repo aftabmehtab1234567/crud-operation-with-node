@@ -83,8 +83,8 @@ router.get('/edit/:id', requireAuth, async (req, res) => {
     const id = req.params.id;
     const user = await User.findById(id).exec();
 
-    if (!user) {
-      res.redirect('/');
+    if (user) {
+      res.redirect('/adminlogin');
     } else {
       res.render("edit", {
         title: "Edit user",
@@ -143,18 +143,20 @@ router.get('/delete/:id',requireAuth, async (req, res) => {
     }
 
     // Respond with a success message
-    res.redirect('/');
+    res.redirect('/adminlogin');
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
 
-router.post('/login', async (req, res) => {
+router.post('/login',requireAuth, async (req, res) => {
   try {
     const check = await User.findOne({ email: req.body.email });
     
     if (check && check.password === req.body.password) {
+      
+      req.session.isAuth = true;
       // If email and password match, render the desired page (e.g., home)
       req.session.user = check;
       res.redirect('/'); // Replace 'home' with the appropriate view name
@@ -167,6 +169,7 @@ router.post('/login', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
 router.get('/logout', (req, res) => {
   // Clear any existing session timeout
   if (req.session.timeout) {
@@ -181,6 +184,10 @@ router.get('/logout', (req, res) => {
     }
   });
 });
-
-
+router.get('/adminregistration', (req, res) => {
+  res.render('adduser', { title: 'Add admin' });
+});
+router.get('/adminlogin', (req, res) => {
+  res.render('admin login', { title: 'Admin  login' });
+});
 module.exports = router;

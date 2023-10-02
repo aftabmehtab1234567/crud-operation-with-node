@@ -8,7 +8,7 @@ function requireAuth(req, res, next) {
     } else {
         console.log('Access denied. Redirecting to login.');
         // User is not authenticated or the session is not active, redirect to the login page
-        res.redirect('/'); // Assuming '/login' is your login page URL
+        res.redirect('/login'); // Assuming '/login' is your login page URL
     }
 }
 
