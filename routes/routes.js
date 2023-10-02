@@ -83,7 +83,7 @@ router.get('/edit/:id', requireAuth, async (req, res) => {
     const id = req.params.id;
     const user = await User.findById(id).exec();
 
-    if (user) {
+    if (!user) {
       res.redirect('/adminlogin');
     } else {
       res.render("edit", {
@@ -150,18 +150,17 @@ router.get('/delete/:id',requireAuth, async (req, res) => {
   }
 });
 
-router.post('/login',requireAuth, async (req, res) => {
+router.post('/login', requireAuth, async (req, res) => {
   try {
     const check = await User.findOne({ email: req.body.email });
     
     if (check && check.password === req.body.password) {
-      
-      req.session.isAuth = true;
-      // If email and password match, render the desired page (e.g., home)
-      req.session.user = check;
-      res.redirect('/'); // Replace 'home' with the appropriate view name
+      // If authentication is successful, set session data
+      req.session.isAuthenticated = true;
+      res.redirect('/');
     } else {
-      // If email or password is incorrect, send an error message
+      // If authentication fails, set session data accordingly
+      req.session.isAuthenticated = false;
       res.redirect('/login');
     }
   } catch (error) {
@@ -170,7 +169,8 @@ router.post('/login',requireAuth, async (req, res) => {
   }
 });
 
-router.get('/logout', (req, res) => {
+
+router.get('/logout',requireAuth, (req, res) => {
   // Clear any existing session timeout
   if (req.session.timeout) {
     clearTimeout(req.session.timeout);

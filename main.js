@@ -2,32 +2,41 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
+
 const session = require('express-session');
 const app = express();
-const PORT = process.env.PORT || 5000; // Using the PORT variable from the .env file
-const dbURI = process.env.Db_URI; // Using the Db_URI variable from the .env file
+const PORT = process.env.PORT || 5000;
+const dbURI = process.env.Db_URI;
 
-// Database connection
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
 
 db.on('error', (error) => console.log(error));
 db.once('open', () => console.log('Connected successfully'));
-//middle ware
- app.use(express.urlencoded({extended:false}));
-  app.use(express.json());  
-  app.use(session({
-        secret:"my secret key",
-        saveUninitialized:true,
-        resave:false,
-    }),
-  );
-app.get("/" ,(req ,res,next)=>{
-    res.locals.message=req.session.message;
-    delete req.session.message;
-    
-    next();
-});
+
+// Middleware setup
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+
+app.use(
+  session({
+    secret: 'your-secret-key',
+    resave: false,
+    saveUninitialized: true,
+  
+  })
+);
+
+  
+  app.get('/', (req, res) => {
+    // Access the session
+    if (req.session.views) {
+      req.session.views++;
+    } else {
+      req.session.views = 1;
+    }
+    res.send(`Views: ${req.session.views}`);
+  });
 
 app.use(express.static("upload"));
 //set template engine
