@@ -157,7 +157,7 @@ router.post('/login', requireAuth, async (req, res) => {
     if (check && check.password === req.body.password) {
       // If authentication is successful, set session data
       req.session.isAuthenticated = true;
-      res.redirect('/');
+      res.render('index', { user: req.sessionID });
     } else {
       // If authentication fails, set session data accordingly
       req.session.isAuthenticated = false;
