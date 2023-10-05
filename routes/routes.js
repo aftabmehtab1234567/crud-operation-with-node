@@ -150,14 +150,20 @@ router.get('/delete/:id',requireAuth, async (req, res) => {
   }
 });
 
-router.post('/login', requireAuth, async (req, res) => {
+router.post('/login', async (req, res) => {
+  
   try {
     const check = await User.findOne({ email: req.body.email });
     
-    if (check && check.password === req.body.password) {
+    if (check && check.password == req.body.password) {
       // If authentication is successful, set session data
+      
+      req.session.user=check;
       req.session.isAuthenticated = true;
-      res.render('index', { user: req.sessionID });
+      req.session.user=check._id;
+      
+      res.redirect('/'); // Incorrect order
+
     } else {
       // If authentication fails, set session data accordingly
       req.session.isAuthenticated = false;

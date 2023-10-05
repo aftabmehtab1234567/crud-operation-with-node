@@ -1,10 +1,10 @@
 function requireAuth(req, res, next) {
-    console.log('requireAuth middleware called');
+    
     console.log('isAuthenticated:', req.session.isAuthenticated);
     console.log('userId:', req.sessionID);
-    req.session.isAuthenticated = true;
-    if (req.session.isAuthenticated && req.sessionID) {
-        next(); // User is authenticated and the session is active, allow access to the route
+    
+    if (req.session.isAuthenticated && req.session.user) {
+        next(); 
     } else {
         console.log('Access denied. Redirecting to login.');
         // User is not authenticated or the session is not active, redirect to the login page

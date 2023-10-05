@@ -42,16 +42,14 @@ app.use(express.static("upload"));
 //set template engine
 app.set('view engine', 'ejs');
 //route prefix
+app.set('views', 'C:/Aftab/views');
 app.use("", require('./routes/routes'));
 app.get('/login', (req, res) => {
     res.render('login', { title: 'Add user' });
   });
  
-  
-  //admin
-  app.get('/admin', (req, res) => {
-    res.render('admin', { title: 'Add user' });
-  });
+ 
+ 
   
 
 app.listen(PORT, () => {

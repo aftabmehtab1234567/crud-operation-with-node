@@ -1,0 +1,28 @@
+[{
+  "_id": {
+    "$oid": "6511693fde995adf5600d1d6"
+  },
+  "name": "aftab",
+  "email": "aftabalam9008@gmail.com",
+  "phone": "45566776",
+  "image": "image_1695728705941_download.jpg",
+  "password": "123456",
+  "created": {
+    "$date": "2023-09-25T11:04:31.611Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "65116954de995adf5600d1db"
+  },
+  "name": "vikas",
+  "email": "vikas@gmail.com",
+  "phone": "3426574567",
+  "image": "image_1695728713567_images.jpg",
+  "password": "123456",
+  "created": {
+    "$date": "2023-09-25T11:04:52.839Z"
+  },
+  "__v": 0
+}]
